@@ -1,5 +1,6 @@
 const app = {
 
+    // Propriétés du module (objet)
     appRoot: document.getElementById('app-root'),
     apiUrl: 'http://localhost:8080/api',
 
@@ -17,9 +18,12 @@ const app = {
         let allRoutes = document.querySelectorAll("[data-page]");
         allRoutes.forEach((route) => {
             route.addEventListener('click', (event) => {
+                // Si data-page ="app.homePage"
+                // pageMethod = 'app.homePage'
                 let pageMethod = event.target.dataset.page;
                 if (pageMethod) {
                     // On affiche la route (appel de la fonction)
+                    // app.homePage();
                     eval(`${pageMethod}`)();
                 } else {
                     alert("la route demandée n'existe pas");
@@ -45,6 +49,11 @@ const app = {
         app.render(homepageTpl);
     },
 
+    contactPage: function()
+    {
+        app.render('<h2>Page de contact</h2>')
+    },
+
     tvshowPage: function() {
         let appToken = sessionStorage.getItem('appToken');
         if (appToken) {
@@ -59,7 +68,16 @@ const app = {
                 .then((resp) => resp.json()) // On transforme la réponse en json
                 .then(function(data) {
                     // On récupère les datas
-                    console.log('tvshowPage', data);
+                    // console.log('tvshowPage', data);
+                    let templateHtml = '<h2>Dernières séries</h2>';
+                    templateHtml += '<ul>';
+                    for(tvshow of data) {
+                        console.log(tvshow.title);
+                        templateHtml += `<li>${tvshow.title}</li>`;
+                    }
+                    templateHtml += '<ul>'
+
+                    app.render(templateHtml);
 
                 })
                 .catch(function(error) {
@@ -113,6 +131,16 @@ const app = {
             .then(function(data) {
                 // On récupère les datas
                 console.log(data);
+                // Si les identifiants saisis sont incorrects, on affiche une Alert
+                if (data.code == 401) {
+                    alert('Identifiants incorrects');
+                } else {
+                    console.log(data);
+                    sessionStorage.setItem('appToken', data.token);
+
+                    // On redirige ensuite vers la page des tvshows
+                    app.tvshowPage();
+                }
             })
             .catch(function(error) {
                 // Une erreur s'est produite
@@ -123,6 +151,7 @@ const app = {
     },
 
     render: function(template) {
+        // On remplace le contenu de la balise <main> par le contenu de la variable template
         app.appRoot.innerHTML = template;
     },
 };
