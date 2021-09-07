@@ -1,0 +1,15 @@
+{
+    "name": "oflix-js",
+    "version": "1.0.0",
+    "author": "Charles EDOU NZE",
+    "description": "",
+    "private": true,
+    "scripts": {
+        "start": "php -S localhost:8000 -t .",
+        "watch": "webpack --watch"
+    },
+    "keywords": [],
+    "license": "ISC",
+    "devDependencies": {},
+    "dependencies": {}
+}
